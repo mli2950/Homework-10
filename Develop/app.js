@@ -39,7 +39,7 @@ inquirer
         const manager = new Manager(
             answers.managerName,
             answers.managerID,
-            answers.manaerEmail,
+            answers.managerEmail,
             answers.managerOfficeNum
         );
         employees.push(manager);
@@ -136,7 +136,7 @@ function createIntern() {
         .then((answers) => {
             const intern = new Intern(
                 answers.internName,
-                answers.internId,
+                answers.internID,
                 answers.internEmail,
                 answers.internSchool
             )
