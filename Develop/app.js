@@ -10,6 +10,8 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
+let employees = []
+
 inquirer
     .prompt([
         {
@@ -20,9 +22,136 @@ inquirer
         {
             type: 'input',
             message: 'What is your managers id',
-            name: ''
+            name: 'managerID'
+        },
+        {
+            type: 'input',
+            message: 'What is your managers email?',
+            name: 'managerEmail'
+        },
+        {
+            type: 'input',
+            message: 'What is your managers office number?',
+            name: 'managerOfficeNum'
         }
     ])
+    .then((answers) => {
+        const manager = new Manager(
+            answers.managerName,
+            answers.managerID,
+            answers.manaerEmail,
+            answers.managerOfficeNum
+        );
+        employees.push(manager);
+        createTeam();
+    })
+
+function createTeam() {
+    inquirer
+        .prompt([
+            {
+                type: "list",
+                message: "What team member would you like to add?",
+                name: "newEmployee",
+                choices: ["Engineer", "Intern", "Done"],
+        }
+        ])
+        .then((answers) => {
+            switch (answers.newEmployee) {
+                case "Engineer":
+                    createEngineer();
+                    break;
+                case "Intern":
+                    createIntern();
+                    break;
+                case "Done":
+                    renderTeam();
+                    break;
+                    deafult:
+                    renderTeam();
+            }
+    })
+}
+    
+function createEngineer() {
+    inquirer
+        .prompt([
+            {
+                type: "input",
+                message: "What is the Engineer's name?",
+                name: "engineerName",
+            },
+            {
+                type: "input",
+                message: "What is the Engineer's ID?",
+                name: "engineerID",
+            },
+            {
+                type: "input",
+                message: "What is your Engineer's email?",
+                name: "engineerEmail",
+            },
+            {
+                type: "input",
+                message: "What is your Engineer's GitHub?",
+                name: "engineerGithub"
+            }
+        ])
+        .then((answers) => {
+            const engineer = new Engineer(
+                answers.engineerName,
+                answers.engineerID,
+                answers.engineerEmail,
+                answers.engineerGithub
+            );
+            employees.push(engineer);
+            createTeam();
+    })
+}
+
+function createIntern() {
+    inquirer
+        .prompt([
+            {
+                type: "input",
+                message: "What is the Intern's name?",
+                name: "internName",
+            },
+            {
+                type: "input",
+                message: "What is the Intern's ID?",
+                name: "internID",
+            },
+            {
+                type: "input",
+                message: "What is your Intern's email?",
+                name: "internEmail",
+            },
+            {
+                type: "input",
+                message: "What school does the Intern attend?",
+                name: "internSchool"
+            }
+        ])
+        .then((answers) => {
+            const intern = new Intern(
+                answers.internName,
+                answers.internId,
+                answers.internEmail,
+                answers.internSchool
+            )
+            employees.push(intern)
+    createTeam();
+        })
+    
+}
+
+function renderTeam() {
+    if (!fs.existsSync(OUTPUT_DIR)) {
+        fs.mkdirSync(OUTPUT_DIR);
+    }
+    return fs.writeFileSync(outputPath, render(employees));
+}
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
